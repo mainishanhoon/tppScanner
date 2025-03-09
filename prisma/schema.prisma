@@ -1,0 +1,35 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Tpp_2 {
+  id            String        @id @default(uuid())
+  name          String
+  email         String
+  phoneNumber   String
+  amount        Int
+  seatNumber    String
+  partIndex     Int
+  rowIndex      Int
+  seatIndex     Int
+  seatStatus    SeatStatus    @default(AVAILABLE)
+  paymentStatus PaymentStatus @default(UNPAID)
+  bookedAt      DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+enum SeatStatus {
+  AVAILABLE
+  PENDING
+  BOOKED
+}
+
+enum PaymentStatus {
+  UNPAID
+  PAID
+}
