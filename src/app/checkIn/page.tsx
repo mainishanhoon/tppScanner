@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { Scanner, IDetectedBarcode } from '@yudiel/react-qr-scanner';
 import { toast } from 'sonner';
-import { useRouter } from 'next/navigation';
 
 interface UserData {
   id: string;
@@ -71,6 +70,8 @@ export default function QRScanner() {
           video: 'h-full w-full flex items-center justify-center',
           container: 'h-dvh w-full flex items-center justify-center',
         }}
+        styles={{
+          video: { transform: 'scaleY(50%)'} }}
         components={{
           audio: true,
           finder: false,
