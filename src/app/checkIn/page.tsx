@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import { Scanner, IDetectedBarcode } from '@yudiel/react-qr-scanner';
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 
 interface UserData {
   id: string;
@@ -12,31 +14,66 @@ interface UserData {
 }
 
 export default function QRScanner() {
+  const router = useRouter();
   const [userData, setUserData] = useState<UserData | null>(null);
 
   async function handleScan(result: IDetectedBarcode[]) {
-    if (result.length > 0) {
-      const userId = result[0].rawValue;
+    if (!result.length) return;
 
-      try {
-        const response = await fetch(`/api/checkIn/${userId}`);
-        if (!response.ok) throw new Error('User not found');
+    const userId = result[0].rawValue;
 
-        const data: UserData = await response.json();
-        setUserData(data);
-      } catch (error) {
-        console.error(error);
-        alert('Invalid QR Code or User not found.');
-      }
-    }
+    toast.promise(
+      fetch(`/api/ticket/${userId}`)
+        .then((res) => {
+          if (!res.ok) throw new Error('No Such User exists!!');
+          return res.json();
+        })
+        .then((data) => setUserData(data))
+        .then(() => router.refresh()),
+      {
+        loading: 'Searching User...',
+        success: 'User Found Successfully',
+        error: 'No Such User exists!!',
+      },
+    );
+  }
+
+  async function handleCheckIn() {
+    if (!userData) return;
+
+    toast.promise(
+      fetch(`/api/ticket/${userData.id}`, {
+        method: 'POST',
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.status === 400) {
+            throw new Error(`Already Checked In at ${data.checkInTime}`);
+          }
+          setUserData({
+            ...userData,
+            checkInDay1: true,
+            checkInDay1At: data.checkInTime,
+          });
+        }),
+      {
+        loading: 'Checking in...',
+        success: 'Check-In Successful!',
+        error: (err) => err.message,
+      },
+    );
   }
 
   return (
-    <div className="relative h-screen w-screen">
+    <div className="relative h-screen w-screen bg-black">
       <Scanner
         onScan={handleScan}
         onError={(error) => console.error(error)}
-        classNames={{ container: 'h-full w-full absolute top-0 left-0' }}
+        classNames={{
+          video: 'h-full w-full object-cover rounded-lg shadow-lg',
+          container:
+            'h-dvh w-dvw absolute top-0 left-0 flex items-center justify-center bg-black/80',
+        }}
       />
 
       {userData && (
@@ -45,9 +82,19 @@ export default function QRScanner() {
           <p className="text-lg">👤 Name: {userData.name}</p>
           <p className="text-lg">🎟️ Seat Number: {userData.seatNumber}</p>
 
-          <button className="mt-4 w-full rounded-lg bg-blue-600 py-2 text-lg font-semibold text-white hover:bg-blue-700">
-            Check In
-          </button>
+          {userData.checkInDay1 ? (
+            <p className="mt-4 text-red-500">
+              ✅ Already Checked In at{' '}
+              {new Date(userData.checkInDay1At!).toLocaleString()}
+            </p>
+          ) : (
+            <button
+              className="mt-4 w-full rounded-lg bg-blue-600 py-2 text-lg font-semibold text-white hover:bg-blue-700"
+              onClick={handleCheckIn}
+            >
+              Check In
+            </button>
+          )}
         </div>
       )}
     </div>
