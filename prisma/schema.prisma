@@ -21,6 +21,11 @@ model Tpp_2 {
   paymentStatus PaymentStatus @default(UNPAID)
   bookedAt      DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
+
+  checkInDay1    Boolean   @default(false)
+  checkInDay1At  DateTime?
+  checkInDay2    Boolean   @default(false)
+  checkInTime2At DateTime?
 }
 
 enum SeatStatus {
