@@ -25,6 +25,7 @@ export default function RootLayout({
       >
         {children}
         <Toaster
+          position="top-center"
           richColors
           closeButton
           className={`${aguDisplay.className} font-bold`}

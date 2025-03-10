@@ -62,22 +62,13 @@ export default function QRScanner() {
   }
 
   return (
-    <div className="relative h-screen w-screen bg-black">
+    <div className="relative h-screen w-full bg-black">
       <Scanner
         onScan={handleScan}
         onError={(error) => console.error(error)}
-        classNames={{
-          video: 'h-full w-full flex items-center justify-center',
-          container: 'h-dvh w-full flex items-center justify-center',
-        }}
-        styles={{
-          video: { transform: 'scaleY(50%)'} }}
+        classNames={{ container: 'h-full w-full absolute top-0 left-0' }}
         components={{
-          audio: true,
           finder: false,
-          zoom: true,
-          onOff: true,
-          torch: true,
         }}
       />
 
