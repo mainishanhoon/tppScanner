@@ -23,7 +23,7 @@ export default function QRScanner() {
     const userId = result[0].rawValue;
 
     toast.promise(
-      fetch(`/api/ticket/${userId}`)
+      fetch(`/api/checkIn/${userId}`)
         .then((res) => {
           if (!res.ok) throw new Error('No Such User exists!!');
           return res.json();
@@ -42,7 +42,7 @@ export default function QRScanner() {
     if (!userData) return;
 
     toast.promise(
-      fetch(`/api/ticket/${userData.id}`, {
+      fetch(`/api/checkIn/${userData.id}`, {
         method: 'POST',
       })
         .then((res) => res.json())
@@ -70,14 +70,14 @@ export default function QRScanner() {
         onScan={handleScan}
         onError={(error) => console.error(error)}
         classNames={{
-          video: 'h-full w-full object-cover rounded-lg shadow-lg',
+          video: 'h-full w-full object-cover rounded-3xl shadow-lg',
           container:
-            'h-dvh w-dvw absolute top-0 left-0 flex items-center justify-center bg-black/80',
+            'h-dvh w-full flex aspect-auto items-center justify-center rounded-3xl',
         }}
       />
 
       {userData && (
-        <div className="animate-slide-up absolute bottom-0 w-full rounded-t-3xl bg-white p-6 text-black shadow-lg dark:bg-gray-900 dark:text-white">
+        <div className="animate-slide-up absolute bottom-0 aspect-auto w-full rounded-t-3xl bg-white p-6 text-black shadow-lg dark:bg-gray-900 dark:text-white">
           <h2 className="text-xl font-bold">User Details</h2>
           <p className="text-lg">👤 Name: {userData.name}</p>
           <p className="text-lg">🎟️ Seat Number: {userData.seatNumber}</p>
