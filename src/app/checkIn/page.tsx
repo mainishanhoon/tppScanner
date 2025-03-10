@@ -70,10 +70,21 @@ export default function QRScanner() {
         onScan={handleScan}
         onError={(error) => console.error(error)}
         classNames={{
-          video:
-            'h-full w-full aspect-3/4 flex items-center justify-center',
-          container:
-            'h-dvh w-full flex items-center justify-center',
+          video: 'h-full w-full flex items-center justify-center',
+          container: 'h-dvh w-full flex items-center justify-center',
+        }}
+        components={{
+          audio: true,
+          finder: true,
+          zoom: true,
+          onOff: true,
+          torch: true,
+        }}
+        constraints={{
+          backgroundBlur: true,
+          height: 720,
+          width: 1280,
+          aspectRatio: 9 / 16,
         }}
       />
 
