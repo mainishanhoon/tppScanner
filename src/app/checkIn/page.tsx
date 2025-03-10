@@ -14,7 +14,6 @@ interface UserData {
 }
 
 export default function QRScanner() {
-  const router = useRouter();
   const [userData, setUserData] = useState<UserData | null>(null);
 
   async function handleScan(result: IDetectedBarcode[]) {
