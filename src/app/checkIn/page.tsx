@@ -23,13 +23,12 @@ export default function QRScanner() {
     const userId = result[0].rawValue;
 
     toast.promise(
-      fetch(`/api/checkIn/${userId}`, { method: '' })
+      fetch(`/api/checkIn/${userId}`, { method: 'GET' })
         .then((res) => {
           if (!res.ok) toast.error('No Such User exists');
           return res.json();
         })
-        .then((data) => setUserData(data))
-        .then(() => router.refresh()),
+        .then((data) => setUserData(data)),
       {
         loading: 'Searching User...',
         success: 'User Found Successfully',
@@ -75,16 +74,10 @@ export default function QRScanner() {
         }}
         components={{
           audio: true,
-          finder: true,
+          finder: false,
           zoom: true,
           onOff: true,
           torch: true,
-        }}
-        constraints={{
-          backgroundBlur: true,
-          height: 720,
-          width: 1280,
-          aspectRatio: 9 / 16,
         }}
       />
 
