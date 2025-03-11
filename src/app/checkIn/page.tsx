@@ -14,7 +14,13 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Armchair, BadgeAlert, BadgeCheck, CircleUser } from 'lucide-react';
+import {
+  Armchair,
+  BadgeAlert,
+  BadgeCheck,
+  BadgeInfo,
+  CircleUser,
+} from 'lucide-react';
 
 interface UserData {
   id: string;
@@ -51,7 +57,6 @@ export default function QRScanner() {
           }
           setUserData(data);
           setOpen(true);
-          setError(null);
         }),
       {
         loading: 'Searching User...',
@@ -68,16 +73,12 @@ export default function QRScanner() {
       fetch(`/api/checkIn/${userData.id}`, { method: 'POST' })
         .then((res) => res.json())
         .then((data) => {
-          if (data.status === 400) {
-            setError(`User has Already Checked In`);
-            return;
-          }
           setUserData({
             ...userData,
             checkInDay1: true,
             checkInDay1At: new Date(data.checkInTime),
           });
-          setError(null);
+          setOpen(false);
         }),
       {
         loading: 'Checking in...',
@@ -88,7 +89,7 @@ export default function QRScanner() {
   }
 
   return (
-    <div className="relative h-dvh w-full">
+    <div className="relative h-dvh w-full p-4">
       <Scanner
         onScan={handleScan}
         onError={(error) => toast.error(`QR Error: ${error}`)}
@@ -101,73 +102,84 @@ export default function QRScanner() {
       />
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-[300px] md:max-w-sm">
+        <DialogContent className="max-w-[300px] rounded-xl md:max-w-sm">
           <DialogHeader>
-            <DialogTitle>
-              {!error && userData && 'Ready to Check In'}
-              {error && userData && 'Already Checked In'}
-              {error && !userData && 'User Not Found'}
+            <DialogTitle className="text-2xl">
+              {!error && !userData?.checkInDay1 && (
+                <div>
+                  <span className="flex size-20 items-center justify-center rounded-full bg-emerald-500/20">
+                    <BadgeInfo
+                      strokeWidth={2.5}
+                      className="size-10 text-emerald-500"
+                    />
+                  </span>
+                  <p className="text-xl text-emerald-500">
+                    User Found! Check In?
+                  </p>
+                </div>
+              )}
+              {!error && userData?.checkInDay1 && (
+                <div>
+                  <span className="flex size-20 items-center justify-center rounded-full bg-amber-500/20">
+                    <BadgeAlert
+                      strokeWidth={2.5}
+                      className="size-10 text-amber-500"
+                    />
+                  </span>
+                  <p className="text-xl text-amber-500">
+                    User has Already Checked In
+                  </p>
+                </div>
+              )}
+              {error && !userData && (
+                <div>
+                  <span className="bg-destructive/20 flex size-20 items-center justify-center rounded-full">
+                    <BadgeAlert
+                      strokeWidth={2.5}
+                      className="text-destructive size-10"
+                    />
+                  </span>
+                  <p className="text-destructive text-xl">
+                    No Such User Exists
+                  </p>
+                </div>
+              )}
             </DialogTitle>
           </DialogHeader>
-          {!error && userData && !userData.checkInDay1 && (
-            <Button variant="constructive" onClick={handleCheckIn}>
-              Proceed with Check In
-            </Button>
-          )}
+
           {!error && userData && (
             <div className="space-y-2 font-bold">
               <p className="text-lg">
-                <CircleUser /> Name: {userData.name}
+                <CircleUser className="text-blue-500" />
+                Name: {userData.name}
               </p>
               <p className="text-lg">
-                <Armchair /> Seat Number: {userData.seatNumber}
+                <Armchair className="text-cyan-500" />
+                Seat Number: {userData.seatNumber}
               </p>
 
-              <p className="text-emerald-500">
-                <BadgeCheck /> User Checked In on
-                <Badge variant="constructive">
-                  {Intl.DateTimeFormat('en-IN', {
-                    dateStyle: 'long',
-                  }).format(userData.checkInDay1At)}
-                </Badge>
-                {' at '}
-                <Badge variant="constructive">
-                  {Intl.DateTimeFormat('en-IN', {
-                    timeStyle: 'medium',
-                  })
-                    .format(userData.checkInDay1At)
-                    .toUpperCase()}
-                </Badge>
-              </p>
-            </div>
-          )}
-
-          {error && userData && (
-            <div className="space-y-2 font-bold">
-              <p className="text-lg">
-                <CircleUser /> Name: {userData.name}
-              </p>
-              <p className="text-lg">
-                <Armchair /> Seat Number: {userData.seatNumber}
-              </p>
+              {!userData?.checkInDay1 && (
+                <Button variant="constructive" onClick={handleCheckIn}>
+                  Proceed with Check In
+                </Button>
+              )}
 
               {userData.checkInDay1 && (
-                <p className="text-destructive">
-                  <BadgeAlert /> User has already checked in on
-                  <Badge variant="pending">
+                <div className="space-y-2">
+                  <Badge variant="constructive" className="text-lg">
                     {Intl.DateTimeFormat('en-IN', {
                       dateStyle: 'long',
                     }).format(userData.checkInDay1At)}
                   </Badge>
-                  {' at '}
-                  <Badge variant="pending">
+                  <p className="text-lg">at</p>
+                  <Badge variant="constructive" className="text-lg">
                     {Intl.DateTimeFormat('en-IN', {
                       timeStyle: 'medium',
                     })
                       .format(userData.checkInDay1At)
                       .toUpperCase()}
                   </Badge>
-                </p>
+                </div>
               )}
             </div>
           )}
