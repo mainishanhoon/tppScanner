@@ -40,8 +40,8 @@ export default function QRScanner() {
       fetch(`/api/checkIn/${userId}`, { method: 'GET' })
         .then(async (response) => {
           if (!response.ok) {
-            toast.error('No Such User exists');
-            return;
+            const errorData = await response.json().catch(() => null);
+            throw new Error(errorData?.error);
           }
           return response.json();
         })
@@ -50,6 +50,10 @@ export default function QRScanner() {
             data.checkInDay1At = new Date(data.checkInDay1At);
           }
           setUserData(data);
+          setOpen(true);
+        })
+        .catch(() => {
+          toast.error('No Such User exists');
           setOpen(true);
         }),
       {
@@ -96,7 +100,7 @@ export default function QRScanner() {
       />
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-[300px] rounded-xl border-2 border-dashed md:max-w-sm">
+        <DialogContent className="max-w-[300px] border-2 border-dashed md:max-w-sm">
           <DialogHeader>
             <DialogTitle className="flex flex-col items-center text-2xl">
               {!error && !userData?.checkInDay1 && (
