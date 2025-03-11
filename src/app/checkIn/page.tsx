@@ -105,11 +105,11 @@ export default function QRScanner() {
       />
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-[300px] border-2 border-dashed md:max-w-sm">
+        <DialogContent className="outline-background bg-muted max-w-[300px] rounded-xl outline-2 outline-dashed md:max-w-sm">
           <DialogHeader>
             <DialogTitle className="flex flex-col items-center text-2xl">
               {!error && !userData?.checkInDay1 && (
-                <div className="flex justify-center space-y-3">
+                <div className="flex flex-col items-center gap-3">
                   <span className="flex size-20 items-center justify-center rounded-full border border-dashed border-emerald-500 bg-emerald-500/20">
                     <BadgeCheck
                       strokeWidth={2.5}
@@ -122,7 +122,7 @@ export default function QRScanner() {
                 </div>
               )}
               {!error && userData?.checkInDay1 && (
-                <div className="flex justify-center space-y-3">
+                <div className="flex flex-col items-center gap-3">
                   <span className="flex size-20 items-center justify-center rounded-full border border-dashed border-amber-500 bg-amber-500/20">
                     <BadgeInfo
                       strokeWidth={2.5}
@@ -135,7 +135,7 @@ export default function QRScanner() {
                 </div>
               )}
               {error && !userData && (
-                <div className="flex justify-center space-y-3">
+                <div className="flex flex-col items-center gap-3">
                   <span className="bg-destructive/20 flex size-20 items-center justify-center rounded-full border border-dashed border-rose-500">
                     <BadgeAlert
                       strokeWidth={2.5}
@@ -149,14 +149,14 @@ export default function QRScanner() {
           </DialogHeader>
 
           {!error && userData && (
-            <div className="space-y-2 text-center">
-              <div className="flex flex-col justify-center">
+            <div className="flex flex-col items-center gap-2">
+              <div className="bg-background border-muted-foreground flex flex-col justify-center border-2 border-dashed p-1">
                 <span className="flex gap-2">
                   <CircleUser
                     strokeWidth={2.5}
                     className="font-medium text-blue-500"
                   />
-                  <p className="font-medium">{userData.name}</p>
+                  <p className="font-medium capitalize">{userData.name}</p>
                 </span>
                 <span className="flex gap-2">
                   <Armchair
@@ -168,13 +168,13 @@ export default function QRScanner() {
               </div>
 
               {userData.checkInDay1 && (
-                <div>
+                <div className="flex flex-col items-center gap-2">
                   <Badge variant="constructive">
                     {Intl.DateTimeFormat('en-IN', {
                       dateStyle: 'long',
                     }).format(userData.checkInDay1At)}
                   </Badge>
-                  <p className="text-lg">at</p>
+                  <p>at</p>
                   <Badge variant="constructive">
                     {Intl.DateTimeFormat('en-IN', {
                       timeStyle: 'medium',
@@ -198,7 +198,7 @@ export default function QRScanner() {
                 <Button
                   type="button"
                   variant="secondary"
-                  onClick={() => router.refresh()}
+                  onClick={() => setOpen(false)}
                   className="text-sm"
                 >
                   Scan Another QR
