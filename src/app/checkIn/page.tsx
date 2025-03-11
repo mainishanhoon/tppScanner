@@ -40,8 +40,8 @@ export default function QRScanner() {
       fetch(`/api/checkIn/${userId}`, { method: 'GET' })
         .then(async (response) => {
           if (!response.ok) {
-            const errorData = await response.json();
-            setError(errorData.error || 'No Such User exists');
+            toast.error('No Such User exists');
+            return;
           }
           return response.json();
         })
@@ -96,46 +96,44 @@ export default function QRScanner() {
       />
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-[300px] rounded-xl md:max-w-sm">
+        <DialogContent className="max-w-[300px] rounded-xl border-2 border-dashed md:max-w-sm">
           <DialogHeader>
             <DialogTitle className="flex flex-col items-center text-2xl">
               {!error && !userData?.checkInDay1 && (
-                <div className="space-y-3">
-                  <span className="flex size-20 items-center justify-center rounded-full bg-emerald-500/20">
+                <div className="flex justify-center space-y-3">
+                  <span className="flex size-20 items-center justify-center rounded-full border border-dashed border-emerald-500 bg-emerald-500/20">
                     <BadgeInfo
                       strokeWidth={2.5}
-                      className="size-16 text-emerald-500"
+                      className="size-16 text-emerald-400"
                     />
                   </span>
-                  <p className="text-xl text-emerald-500">
+                  <p className="text-xl text-emerald-400">
                     User Found! Check In?
                   </p>
                 </div>
               )}
               {!error && userData?.checkInDay1 && (
-                <div className="space-y-3">
-                  <span className="flex size-20 items-center justify-center rounded-full bg-amber-500/20">
+                <div className="flex justify-center space-y-3">
+                  <span className="flex size-20 items-center justify-center rounded-full border border-dashed border-amber-500 bg-amber-500/20">
                     <BadgeAlert
                       strokeWidth={2.5}
-                      className="size-16 text-amber-500"
+                      className="size-16 text-amber-400"
                     />
                   </span>
-                  <p className="text-xl text-amber-500">
+                  <p className="text-xl text-amber-400">
                     User has Already Checked In
                   </p>
                 </div>
               )}
               {error && !userData && (
-                <div className="space-y-3">
-                  <span className="bg-destructive/20 flex size-20 items-center justify-center rounded-full">
+                <div className="flex justify-center space-y-3">
+                  <span className="bg-destructive/20 flex size-20 items-center justify-center rounded-full border border-dashed border-rose-500">
                     <BadgeAlert
                       strokeWidth={2.5}
-                      className="text-destructive size-16"
+                      className="size-16 text-rose-400"
                     />
                   </span>
-                  <p className="text-destructive text-xl">
-                    No Such User Exists
-                  </p>
+                  <p className="text-xl text-rose-400">No Such User Exists</p>
                 </div>
               )}
             </DialogTitle>
@@ -143,40 +141,32 @@ export default function QRScanner() {
 
           {!error && userData && (
             <div className="space-y-2 text-center">
-              <p className="flex gap-2 text-lg">
-                <CircleUser
-                  strokeWidth={2.5}
-                  className="font-medium text-blue-500"
-                />
-                Name: {userData.name}
-              </p>
-              <p className="flex gap-2 text-lg">
-                <Armchair
-                  strokeWidth={2.5}
-                  className="font-medium text-cyan-500"
-                />
-                Seat Number: {userData.seatNumber}
-              </p>
-
-              {!userData?.checkInDay1 && (
-                <Button
-                  variant="constructive"
-                  size="sm"
-                  onClick={handleCheckIn}
-                >
-                  Proceed with Check In
-                </Button>
-              )}
+              <div className="flex flex-col justify-center">
+                <span className="flex gap-2">
+                  <CircleUser
+                    strokeWidth={2.5}
+                    className="font-medium text-blue-500"
+                  />
+                  <p className="font-medium">{userData.name}</p>
+                </span>
+                <span className="flex gap-2">
+                  <Armchair
+                    strokeWidth={2.5}
+                    className="font-medium text-cyan-500"
+                  />
+                  <p className="font-medium">{userData.seatNumber}</p>
+                </span>
+              </div>
 
               {userData.checkInDay1 && (
-                <div className="space-y-2">
-                  <Badge variant="constructive" className="text-base">
+                <div>
+                  <Badge variant="constructive">
                     {Intl.DateTimeFormat('en-IN', {
                       dateStyle: 'long',
                     }).format(userData.checkInDay1At)}
                   </Badge>
                   <p className="text-lg">at</p>
-                  <Badge variant="constructive" className="text-base">
+                  <Badge variant="constructive">
                     {Intl.DateTimeFormat('en-IN', {
                       timeStyle: 'medium',
                     })
@@ -188,16 +178,24 @@ export default function QRScanner() {
             </div>
           )}
 
-          <DialogFooter className="flex justify-center">
+          <DialogFooter className="flex flex-col items-center gap-3">
             <DialogClose asChild>
-              <Button
-                type="button"
-                size="sm"
-                variant="secondary"
-                onClick={() => router.refresh()}
-              >
-                Scan Another QR
-              </Button>
+              {!userData?.checkInDay1 && (
+                <Button className="mt-5 text-sm" onClick={handleCheckIn}>
+                  Proceed with Check In
+                </Button>
+              )}
+              {error ||
+                (userData?.checkInDay1 && (
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={() => router.refresh()}
+                    className="text-sm"
+                  >
+                    Scan Another QR
+                  </Button>
+                ))}
             </DialogClose>
           </DialogFooter>
         </DialogContent>
