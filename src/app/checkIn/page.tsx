@@ -37,18 +37,15 @@ export default function QRScanner() {
     if (!result.length) return;
 
     const userId = result[0].rawValue;
-    setError(null);
 
     toast.promise(
       fetch(`/api/checkIn/${userId}`)
-        .then(async (res) => {
-          if (!res.ok) {
-            if (!res.ok) {
-              setError('No Such User exists');
-              return;
-            }
+        .then(async (response) => {
+          if (!response.ok) {
+            setError('No Such User Exists');
+            return;
           }
-          return res.json();
+          return response.json();
         })
         .then((data) => {
           if (data.checkInDay1At) {
@@ -56,11 +53,13 @@ export default function QRScanner() {
           }
           setUserData(data);
         })
-        .finally(() => setOpen(true)),
+        .finally(() => {
+          setOpen(true);
+        }),
       {
         loading: 'Searching User...',
-        success: 'The Search is Complete',
-        error: (err) => err.message || 'Something Went Wrong',
+        success: 'User Found!!',
+        error: 'No Such User Exists',
       },
     );
   }
@@ -70,14 +69,17 @@ export default function QRScanner() {
 
     toast.promise(
       fetch(`/api/checkIn/${userData.id}`, { method: 'POST' })
-        .then((res) => res.json())
+        .then((response) => response.json())
         .then((data) => {
           setUserData({
             ...userData,
             checkInDay1: true,
             checkInDay1At: new Date(data.checkInTime),
           });
+        })
+        .finally(() => {
           setOpen(false);
+          setError(null);
         }),
       {
         loading: 'Checking in...',
@@ -107,10 +109,7 @@ export default function QRScanner() {
               {!error && !userData?.checkInDay1 && (
                 <div className="flex flex-col items-center gap-3">
                   <span className="flex size-20 items-center justify-center rounded-full border border-dashed border-emerald-500 bg-emerald-500/20">
-                    <BadgeCheck
-                      strokeWidth={2.5}
-                      className="size-16 text-emerald-400"
-                    />
+                    <BadgeCheck className="size-14 text-emerald-400" />
                   </span>
                   <p className="text-xl text-emerald-400">
                     User Found! Check In?
@@ -120,23 +119,17 @@ export default function QRScanner() {
               {!error && userData?.checkInDay1 && (
                 <div className="flex flex-col items-center gap-3">
                   <span className="flex size-20 items-center justify-center rounded-full border border-dashed border-amber-500 bg-amber-500/20">
-                    <BadgeInfo
-                      strokeWidth={2.5}
-                      className="size-16 text-amber-400"
-                    />
+                    <BadgeInfo className="size-14 text-amber-400" />
                   </span>
                   <p className="text-xl text-amber-400">
                     User has Already Checked In
                   </p>
                 </div>
               )}
-              {error && !userData && (
+              {error && (
                 <div className="flex flex-col items-center gap-3">
                   <span className="bg-destructive/20 flex size-20 items-center justify-center rounded-full border border-dashed border-rose-500">
-                    <BadgeAlert
-                      strokeWidth={2.5}
-                      className="size-16 text-rose-400"
-                    />
+                    <BadgeAlert className="size-14 text-rose-400" />
                   </span>
                   <p className="text-xl text-rose-400">No Such User Exists</p>
                 </div>
@@ -146,8 +139,8 @@ export default function QRScanner() {
 
           {!error && userData && (
             <div className="flex flex-col items-center gap-2">
-              <div className="bg-background border-muted-foreground flex flex-col justify-center rounded-lg border-2 border-dashed p-2">
-                <span className="flex gap-4">
+              <div className="bg-background border-muted-foreground flex flex-col justify-center gap-2 rounded-lg border-2 border-dashed p-2">
+                <span className="flex gap-2">
                   <CircleUser
                     strokeWidth={2.5}
                     className="font-medium text-blue-500"
@@ -164,7 +157,7 @@ export default function QRScanner() {
               </div>
 
               {userData.checkInDay1 && (
-                <div className="flex flex-col items-center gap-2">
+                <div className="mt-4 flex flex-col items-center">
                   <Badge variant="constructive">
                     {Intl.DateTimeFormat('en-IN', {
                       dateStyle: 'long',
@@ -185,20 +178,28 @@ export default function QRScanner() {
 
           <DialogFooter className="flex flex-col items-center gap-3">
             {!userData?.checkInDay1 && (
-              <Button className="mt-5 text-sm" onClick={handleCheckIn}>
-                Proceed with Check In
-              </Button>
-            )}
-            {error ||
-              (userData?.checkInDay1 && (
+              <div className="flex flex-col items-center gap-3">
+                <Button className="mt-5 text-sm" onClick={handleCheckIn}>
+                  Proceed with Check In
+                </Button>
                 <Button
                   type="button"
                   onClick={() => setOpen(false)}
-                  className="bg-blue-400 text-sm text-blue-400 shadow-sm hover:bg-blue-400/80"
+                  className="text-background bg-blue-500 text-sm shadow-sm hover:bg-blue-500/80"
                 >
                   Scan Another QR
                 </Button>
-              ))}
+              </div>
+            )}
+            {error && (
+              <Button
+                type="button"
+                onClick={() => setOpen(false)}
+                className="text-background bg-blue-500 text-sm shadow-sm hover:bg-blue-500/80"
+              >
+                Scan Another QR
+              </Button>
+            )}
           </DialogFooter>
         </DialogContent>
       </Dialog>
