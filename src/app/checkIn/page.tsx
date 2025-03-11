@@ -3,6 +3,16 @@
 import { useState } from 'react';
 import { Scanner, IDetectedBarcode } from '@yudiel/react-qr-scanner';
 import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogClose,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 
 interface UserData {
   id: string;
@@ -13,20 +23,34 @@ interface UserData {
 }
 
 export default function QRScanner() {
+  const router = useRouter();
   const [userData, setUserData] = useState<UserData | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [open, setOpen] = useState(false); // Controls dialog visibility
 
   async function handleScan(result: IDetectedBarcode[]) {
     if (!result.length) return;
 
     const userId = result[0].rawValue;
+    setError(null);
 
     toast.promise(
       fetch(`/api/checkIn/${userId}`, { method: 'GET' })
         .then((res) => {
-          if (!res.ok) toast.error('No Such User exists');
+          if (!res.ok) {
+            toast.error('No Such User exists');
+            return;
+          }
           return res.json();
         })
-        .then((data) => setUserData(data)),
+        .then((data) => {
+          setUserData(data);
+          setOpen(true); // Open dialog when user is found
+        })
+        .catch((err) => {
+          setError(err.message);
+          setOpen(true); // Open dialog when user is not found
+        }),
       {
         loading: 'Searching User...',
         success: 'User Found Successfully',
@@ -39,13 +63,12 @@ export default function QRScanner() {
     if (!userData) return;
 
     toast.promise(
-      fetch(`/api/checkIn/${userData.id}`, {
-        method: 'POST',
-      })
+      fetch(`/api/checkIn/${userData.id}`, { method: 'POST' })
         .then((res) => res.json())
         .then((data) => {
           if (data.status === 400) {
-            throw new Error(`Already Checked In at ${data.checkInTime}`);
+            toast.error(`Already Checked In at ${data.checkInTime}`);
+            return;
           }
           setUserData({
             ...userData,
@@ -63,36 +86,61 @@ export default function QRScanner() {
 
   return (
     <div className="relative h-screen w-full bg-black">
+      {/* QR Scanner */}
       <Scanner
         onScan={handleScan}
         onError={(error) => console.error(error)}
-        classNames={{ container: 'h-full w-full absolute top-0 left-0' }}
-        components={{
-          finder: false,
+        classNames={{
+          video: 'h-full w-full object-cover rounded-lg shadow-lg',
+          container:
+            'h-dvh w-dvw absolute top-0 left-0 flex items-center justify-center bg-black/80',
         }}
+        components={{ finder: false }}
       />
 
-      {userData && (
-        <div className="animate-slide-up absolute bottom-0 aspect-auto w-full rounded-t-3xl bg-white p-6 text-black shadow-lg dark:bg-gray-900 dark:text-white">
-          <h2 className="text-xl font-bold">User Details</h2>
-          <p className="text-lg">👤 Name: {userData.name}</p>
-          <p className="text-lg">🎟️ Seat Number: {userData.seatNumber}</p>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              {error ? 'User Not Found' : 'User Details'}
+            </DialogTitle>
+          </DialogHeader>
 
-          {userData.checkInDay1 ? (
-            <p className="mt-4 text-red-500">
-              ✅ Already Checked In at{' '}
-              {new Date(userData.checkInDay1At!).toLocaleString()}
-            </p>
-          ) : (
-            <button
-              className="mt-4 w-full rounded-lg bg-blue-600 py-2 text-lg font-semibold text-white hover:bg-blue-700"
-              onClick={handleCheckIn}
-            >
-              Check In
-            </button>
+          {/* If User is Found, Show Details */}
+          {!error && userData && (
+            <div className="space-y-3">
+              <p className="text-lg">👤 Name: {userData.name}</p>
+              <p className="text-lg">🎟️ Seat Number: {userData.seatNumber}</p>
+
+              {userData.checkInDay1 ? (
+                <p className="text-red-500">
+                  ✅ Already Checked In at{' '}
+                  {new Date(userData.checkInDay1At!).toLocaleString()}
+                </p>
+              ) : (
+                <Button className="w-full" onClick={handleCheckIn}>
+                  Check In
+                </Button>
+              )}
+            </div>
           )}
-        </div>
-      )}
+
+          {/* If User is Not Found, Show Close Button */}
+          {error && (
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={() => router.refresh()}
+                >
+                  Close
+                </Button>
+              </DialogClose>
+            </DialogFooter>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

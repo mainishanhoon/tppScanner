@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
-import { Exo } from 'next/font/google';
+import { Rubik } from 'next/font/google';
 import './globals.css';
 import { Toaster } from 'sonner';
 
-const aguDisplay = Exo({
+const aguDisplay = Rubik({
   weight: 'variable',
   subsets: ['latin'],
 });
