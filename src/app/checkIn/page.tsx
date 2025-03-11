@@ -122,7 +122,7 @@ export default function QRScanner() {
               {!error && userData?.checkInDay1 && (
                 <div className="flex justify-center space-y-3">
                   <span className="flex size-20 items-center justify-center rounded-full border border-dashed border-amber-500 bg-amber-500/20">
-                    <BadgeAlert
+                    <BadgeInfo
                       strokeWidth={2.5}
                       className="size-16 text-amber-400"
                     />
