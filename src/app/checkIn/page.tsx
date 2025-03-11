@@ -175,6 +175,17 @@ export default function QRScanner() {
           )}
 
           <DialogFooter className="flex flex-col items-center gap-3">
+            {userData?.checkInDay1 && (
+              <div className="flex flex-col items-center gap-3">
+                <Button
+                  type="button"
+                  onClick={() => setOpen(false)}
+                  className="text-background bg-blue-500 text-sm shadow-sm hover:bg-blue-500/80"
+                >
+                  Scan Another QR
+                </Button>
+              </div>
+            )}
             {!error && !userData?.checkInDay1 && (
               <div className="flex flex-col items-center gap-3">
                 <Button className="mt-5 text-sm" onClick={handleCheckIn}>
