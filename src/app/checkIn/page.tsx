@@ -13,20 +13,21 @@ import {
   DialogClose,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 
 interface UserData {
   id: string;
   name: string;
   seatNumber: string;
   checkInDay1: boolean;
-  checkInDay1At: string | null;
+  checkInDay1At: Date;
 }
 
 export default function QRScanner() {
   const router = useRouter();
   const [userData, setUserData] = useState<UserData | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [open, setOpen] = useState(false); // Controls dialog visibility
+  const [open, setOpen] = useState(false);
 
   async function handleScan(result: IDetectedBarcode[]) {
     if (!result.length) return;
@@ -38,22 +39,18 @@ export default function QRScanner() {
       fetch(`/api/checkIn/${userId}`, { method: 'GET' })
         .then((res) => {
           if (!res.ok) {
-            toast.error('No Such User exists');
+            setError('No Such User exists');
             return;
           }
           return res.json();
         })
         .then((data) => {
           setUserData(data);
-          setOpen(true); // Open dialog when user is found
-        })
-        .catch((err) => {
-          setError(err.message);
-          setOpen(true); // Open dialog when user is not found
+          setOpen(true);
         }),
       {
         loading: 'Searching User...',
-        success: 'User Found Successfully',
+        success: 'User Found!',
         error: 'Something Went Wrong',
       },
     );
@@ -67,7 +64,7 @@ export default function QRScanner() {
         .then((res) => res.json())
         .then((data) => {
           if (data.status === 400) {
-            toast.error(`Already Checked In at ${data.checkInTime}`);
+            setError(`User has Already Checked In`);
             return;
           }
           setUserData({
@@ -75,58 +72,99 @@ export default function QRScanner() {
             checkInDay1: true,
             checkInDay1At: data.checkInTime,
           });
+          setError(null);
         }),
       {
         loading: 'Checking in...',
         success: 'Check-In Successful!',
-        error: (err) => err.message,
+        error: "Couldn't Check In",
       },
     );
   }
 
   return (
     <div className="relative h-screen w-full bg-black">
-      {/* QR Scanner */}
       <Scanner
         onScan={handleScan}
         onError={(error) => console.error(error)}
         classNames={{
           video: 'h-full w-full object-cover rounded-lg shadow-lg',
           container:
-            'h-dvh w-dvw absolute top-0 left-0 flex items-center justify-center bg-black/80',
+            'h-dvh w-dvw absolute top-0 left-0 flex items-center justify-center bg-background',
         }}
         components={{ finder: false }}
       />
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent>
+        <DialogContent className="max-w-[340px] md:max-w-sm">
           <DialogHeader>
             <DialogTitle>
-              {error ? 'User Not Found' : 'User Details'}
+              {!error && userData && 'Ready to Check In'}
+              {error && userData && 'Already Checked In'}
+              {error && !userData && 'User Not Found'}
             </DialogTitle>
           </DialogHeader>
-
-          {/* If User is Found, Show Details */}
+          {!error && (
+            <Button variant="constructive" onClick={handleCheckIn}>
+              Check In
+            </Button>
+          )}
+          {error && (userData || !userData) && (
+            <Button variant="secondary" onClick={() => router.refresh()}>
+              Scan Another QR
+            </Button>
+          )}
           {!error && userData && (
-            <div className="space-y-3">
+            <div className="space-y-2 font-bold">
               <p className="text-lg">👤 Name: {userData.name}</p>
               <p className="text-lg">🎟️ Seat Number: {userData.seatNumber}</p>
 
-              {userData.checkInDay1 ? (
-                <p className="text-red-500">
-                  ✅ Already Checked In at{' '}
-                  {new Date(userData.checkInDay1At!).toLocaleString()}
+              <p className="text-emerald-500">
+                ✅ User Checked In on
+                <Badge variant="constructive">
+                  {Intl.DateTimeFormat('en-IN', {
+                    dateStyle: 'long',
+                  }).format(userData.checkInDay1At)}
+                </Badge>
+                {' at '}
+                <Badge variant="constructive">
+                  {Intl.DateTimeFormat('en-IN', {
+                    timeStyle: 'medium',
+                  })
+                    .format(userData.checkInDay1At)
+                    .toUpperCase()}
+                </Badge>
+              </p>
+            </div>
+          )}
+
+          {error && userData && (
+            <div className="space-y-2 font-bold">
+              <p className="text-lg">👤 Name: {userData.name}</p>
+              <p className="text-lg">🎟️ Seat Number: {userData.seatNumber}</p>
+
+              {userData.checkInDay1 && (
+                <p className="text-destructive">
+                  ℹ️ User has already checked in on
+                  <Badge variant="pending">
+                    {Intl.DateTimeFormat('en-IN', {
+                      dateStyle: 'long',
+                    }).format(userData.checkInDay1At)}
+                  </Badge>
+                  {' at '}
+                  <Badge variant="pending">
+                    {Intl.DateTimeFormat('en-IN', {
+                      timeStyle: 'medium',
+                    })
+                      .format(userData.checkInDay1At)
+                      .toUpperCase()}
+                  </Badge>
                 </p>
-              ) : (
-                <Button className="w-full" onClick={handleCheckIn}>
-                  Check In
-                </Button>
               )}
             </div>
           )}
 
-          {/* If User is Not Found, Show Close Button */}
-          {error && (
+          {error && !userData && (
             <DialogFooter>
               <DialogClose asChild>
                 <Button

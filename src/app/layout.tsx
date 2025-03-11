@@ -3,7 +3,7 @@ import { Rubik } from 'next/font/google';
 import './globals.css';
 import { Toaster } from 'sonner';
 
-const aguDisplay = Rubik({
+const rubik = Rubik({
   weight: 'variable',
   subsets: ['latin'],
 });
@@ -21,14 +21,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${aguDisplay.className} font-normal tracking-wide antialiased`}
+        className={`${rubik.className} font-normal antialiased`}
       >
         {children}
         <Toaster
           position="top-center"
           richColors
           closeButton
-          className={`${aguDisplay.className} font-bold`}
+          className={`${rubik.className} font-bold`}
         />
       </body>
     </html>
