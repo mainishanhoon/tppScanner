@@ -17,7 +17,6 @@ import { Badge } from '@/components/ui/badge';
 import {
   Armchair,
   BadgeAlert,
-  BadgeCheck,
   BadgeInfo,
   CircleUser,
 } from 'lucide-react';
