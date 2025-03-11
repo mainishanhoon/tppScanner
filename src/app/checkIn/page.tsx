@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Armchair, BadgeAlert, BadgeCheck, CircleUser } from 'lucide-react';
 
 interface UserData {
   id: string;
@@ -45,12 +46,16 @@ export default function QRScanner() {
           return res.json();
         })
         .then((data) => {
+          if (data.checkInDay1At) {
+            data.checkInDay1At = new Date(data.checkInDay1At);
+          }
           setUserData(data);
           setOpen(true);
+          setError(null);
         }),
       {
         loading: 'Searching User...',
-        success: 'User Found!',
+        success: 'The Search is Complete',
         error: 'Something Went Wrong',
       },
     );
@@ -70,7 +75,7 @@ export default function QRScanner() {
           setUserData({
             ...userData,
             checkInDay1: true,
-            checkInDay1At: data.checkInTime,
+            checkInDay1At: new Date(data.checkInTime),
           });
           setError(null);
         }),
@@ -83,20 +88,20 @@ export default function QRScanner() {
   }
 
   return (
-    <div className="relative h-screen w-full bg-black">
+    <div className="relative h-dvh w-full">
       <Scanner
         onScan={handleScan}
-        onError={(error) => console.error(error)}
+        onError={(error) => toast.error(`QR Error: ${error}`)}
         classNames={{
-          video: 'h-full w-full object-cover rounded-lg shadow-lg',
+          video: 'size-full object-cover rounded-xl shadow-lg',
           container:
-            'h-dvh w-dvw absolute top-0 left-0 flex items-center justify-center bg-background',
+            'size-full absolute top-0 left-0 flex items-center justify-center bg-background',
         }}
         components={{ finder: false }}
       />
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-[340px] md:max-w-sm">
+        <DialogContent className="max-w-[300px] md:max-w-sm">
           <DialogHeader>
             <DialogTitle>
               {!error && userData && 'Ready to Check In'}
@@ -104,23 +109,22 @@ export default function QRScanner() {
               {error && !userData && 'User Not Found'}
             </DialogTitle>
           </DialogHeader>
-          {!error && (
+          {!error && userData && !userData.checkInDay1 && (
             <Button variant="constructive" onClick={handleCheckIn}>
-              Check In
-            </Button>
-          )}
-          {error && (userData || !userData) && (
-            <Button variant="secondary" onClick={() => router.refresh()}>
-              Scan Another QR
+              Proceed with Check In
             </Button>
           )}
           {!error && userData && (
             <div className="space-y-2 font-bold">
-              <p className="text-lg">👤 Name: {userData.name}</p>
-              <p className="text-lg">🎟️ Seat Number: {userData.seatNumber}</p>
+              <p className="text-lg">
+                <CircleUser /> Name: {userData.name}
+              </p>
+              <p className="text-lg">
+                <Armchair /> Seat Number: {userData.seatNumber}
+              </p>
 
               <p className="text-emerald-500">
-                ✅ User Checked In on
+                <BadgeCheck /> User Checked In on
                 <Badge variant="constructive">
                   {Intl.DateTimeFormat('en-IN', {
                     dateStyle: 'long',
@@ -140,12 +144,16 @@ export default function QRScanner() {
 
           {error && userData && (
             <div className="space-y-2 font-bold">
-              <p className="text-lg">👤 Name: {userData.name}</p>
-              <p className="text-lg">🎟️ Seat Number: {userData.seatNumber}</p>
+              <p className="text-lg">
+                <CircleUser /> Name: {userData.name}
+              </p>
+              <p className="text-lg">
+                <Armchair /> Seat Number: {userData.seatNumber}
+              </p>
 
               {userData.checkInDay1 && (
                 <p className="text-destructive">
-                  ℹ️ User has already checked in on
+                  <BadgeAlert /> User has already checked in on
                   <Badge variant="pending">
                     {Intl.DateTimeFormat('en-IN', {
                       dateStyle: 'long',
@@ -172,7 +180,7 @@ export default function QRScanner() {
                   variant="secondary"
                   onClick={() => router.refresh()}
                 >
-                  Close
+                  Scan Another QR
                 </Button>
               </DialogClose>
             </DialogFooter>
