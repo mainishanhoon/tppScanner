@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { Scanner, IDetectedBarcode } from '@yudiel/react-qr-scanner';
 import { toast } from 'sonner';
-import { useRouter } from 'next/navigation';
 import {
   Dialog,
   DialogContent,
@@ -30,7 +29,6 @@ interface UserData {
 }
 
 export default function QRScanner() {
-  const router = useRouter();
   const [userData, setUserData] = useState<UserData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
@@ -107,7 +105,7 @@ export default function QRScanner() {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="outline-background bg-muted max-w-[300px] rounded-xl outline-2 outline-dashed md:max-w-sm">
           <DialogHeader>
-            <DialogTitle className="flex flex-col items-center text-2xl">
+            <DialogTitle className="flex justify-center text-2xl">
               {!error && !userData?.checkInDay1 && (
                 <div className="flex flex-col items-center gap-3">
                   <span className="flex size-20 items-center justify-center rounded-full border border-dashed border-emerald-500 bg-emerald-500/20">
@@ -150,7 +148,7 @@ export default function QRScanner() {
 
           {!error && userData && (
             <div className="flex flex-col items-center gap-2">
-              <div className="bg-background border-muted-foreground flex flex-col justify-center border-2 border-dashed p-1">
+              <div className="bg-background border-muted-foreground flex flex-col justify-center rounded-lg border-2 border-dashed p-1.5">
                 <span className="flex gap-2">
                   <CircleUser
                     strokeWidth={2.5}
