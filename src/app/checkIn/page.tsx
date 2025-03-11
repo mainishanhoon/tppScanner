@@ -35,11 +35,10 @@ export default function QRScanner() {
 
   async function handleScan(result: IDetectedBarcode[]) {
     if (!result.length) return;
-
-    const userId = result[0].rawValue;
+    setError(null);
 
     toast.promise(
-      fetch(`/api/checkIn/${userId}`)
+      fetch(`/api/checkIn/${result[0].rawValue}`)
         .then(async (response) => {
           if (!response.ok) {
             setError('No Such User Exists');
@@ -79,7 +78,6 @@ export default function QRScanner() {
         })
         .finally(() => {
           setOpen(false);
-          setError(null);
         }),
       {
         loading: 'Checking in...',
@@ -177,7 +175,7 @@ export default function QRScanner() {
           )}
 
           <DialogFooter className="flex flex-col items-center gap-3">
-            {!userData?.checkInDay1 && (
+            {!error && !userData?.checkInDay1 && (
               <div className="flex flex-col items-center gap-3">
                 <Button className="mt-5 text-sm" onClick={handleCheckIn}>
                   Proceed with Check In
