@@ -5,7 +5,7 @@ interface Params {
   params: Promise<{ userId: string }>;
 }
 
-export async function GET(req: NextRequest, { params }: Params) {
+export async function GET(_: NextRequest, { params }: Params) {
   const { userId } = await params;
 
   const user = await prisma.tpp_2.findUnique({
@@ -25,7 +25,7 @@ export async function GET(req: NextRequest, { params }: Params) {
   return NextResponse.json(user);
 }
 
-export async function POST(req: NextRequest, { params }: Params) {
+export async function POST(_: NextRequest, { params }: Params) {
   const { userId } = await params;
 
   const user = await prisma.tpp_2.findUnique({

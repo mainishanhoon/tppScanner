@@ -14,7 +14,13 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Armchair, BadgeAlert, BadgeInfo, CircleUser } from 'lucide-react';
+import {
+  Armchair,
+  BadgeAlert,
+  BadgeCheck,
+  BadgeInfo,
+  CircleUser,
+} from 'lucide-react';
 
 interface UserData {
   id: string;
@@ -38,12 +44,13 @@ export default function QRScanner() {
 
     toast.promise(
       fetch(`/api/checkIn/${userId}`, { method: 'GET' })
-        .then(async (response) => {
-          if (!response.ok) {
-            const errorData = await response.json().catch(() => null);
-            throw new Error(errorData?.error);
+        .then((res) => {
+          if (!res.ok) {
+            setError('No Such User exists');
+            setOpen(true);
+            return;
           }
-          return response.json();
+          return res.json();
         })
         .then((data) => {
           if (data.checkInDay1At) {
@@ -51,15 +58,11 @@ export default function QRScanner() {
           }
           setUserData(data);
           setOpen(true);
-        })
-        .catch(() => {
-          toast.error('No Such User exists');
-          setOpen(true);
         }),
       {
         loading: 'Searching User...',
         success: 'The Search is Complete',
-        error: (err) => err.message || 'Something Went Wrong',
+        error: 'No Such User exists',
       },
     );
   }
@@ -69,7 +72,7 @@ export default function QRScanner() {
 
     toast.promise(
       fetch(`/api/checkIn/${userData.id}`, { method: 'POST' })
-        .then((response) => response.json())
+        .then((res) => res.json())
         .then((data) => {
           setUserData({
             ...userData,
@@ -106,7 +109,7 @@ export default function QRScanner() {
               {!error && !userData?.checkInDay1 && (
                 <div className="flex justify-center space-y-3">
                   <span className="flex size-20 items-center justify-center rounded-full border border-dashed border-emerald-500 bg-emerald-500/20">
-                    <BadgeInfo
+                    <BadgeCheck
                       strokeWidth={2.5}
                       className="size-16 text-emerald-400"
                     />
