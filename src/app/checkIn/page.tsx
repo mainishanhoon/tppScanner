@@ -43,8 +43,10 @@ export default function QRScanner() {
       fetch(`/api/checkIn/${userId}`)
         .then(async (res) => {
           if (!res.ok) {
-            const errorData = await res.json().catch(() => null);
-            throw new Error(errorData?.error || 'No Such User exists');
+            if (!res.ok) {
+              setError('No Such User exists');
+              return;
+            }
           }
           return res.json();
         })
@@ -53,12 +55,8 @@ export default function QRScanner() {
             data.checkInDay1At = new Date(data.checkInDay1At);
           }
           setUserData(data);
-          setOpen(true);
         })
-        .catch((err) => {
-          setError(err.message);
-          setOpen(true);
-        }),
+        .finally(() => setOpen(true)),
       {
         loading: 'Searching User...',
         success: 'The Search is Complete',
@@ -148,8 +146,8 @@ export default function QRScanner() {
 
           {!error && userData && (
             <div className="flex flex-col items-center gap-2">
-              <div className="bg-background border-muted-foreground flex flex-col justify-center rounded-lg border-2 border-dashed p-1.5">
-                <span className="flex gap-2">
+              <div className="bg-background border-muted-foreground flex flex-col justify-center rounded-lg border-2 border-dashed p-2">
+                <span className="flex gap-4">
                   <CircleUser
                     strokeWidth={2.5}
                     className="font-medium text-blue-500"
@@ -195,9 +193,8 @@ export default function QRScanner() {
               (userData?.checkInDay1 && (
                 <Button
                   type="button"
-                  variant="secondary"
                   onClick={() => setOpen(false)}
-                  className="text-sm"
+                  className="bg-blue-400 text-sm text-blue-400 shadow-sm hover:bg-blue-400/80"
                 >
                   Scan Another QR
                 </Button>
