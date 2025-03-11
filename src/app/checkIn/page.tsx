@@ -43,12 +43,11 @@ export default function QRScanner() {
     setError(null);
 
     toast.promise(
-      fetch(`/api/checkIn/${userId}`, { method: 'GET' })
-        .then((res) => {
+      fetch(`/api/checkIn/${userId}`)
+        .then(async (res) => {
           if (!res.ok) {
-            setError('No Such User exists');
-            setOpen(true);
-            return;
+            const errorData = await res.json().catch(() => null);
+            throw new Error(errorData?.error || 'No Such User exists');
           }
           return res.json();
         })
@@ -58,11 +57,15 @@ export default function QRScanner() {
           }
           setUserData(data);
           setOpen(true);
+        })
+        .catch((err) => {
+          setError(err.message);
+          setOpen(true);
         }),
       {
         loading: 'Searching User...',
         success: 'The Search is Complete',
-        error: 'No Such User exists',
+        error: (err) => err.message || 'Something Went Wrong',
       },
     );
   }
@@ -186,24 +189,22 @@ export default function QRScanner() {
           )}
 
           <DialogFooter className="flex flex-col items-center gap-3">
-            <DialogClose asChild>
-              {!userData?.checkInDay1 && (
-                <Button className="mt-5 text-sm" onClick={handleCheckIn}>
-                  Proceed with Check In
+            {!userData?.checkInDay1 && (
+              <Button className="mt-5 text-sm" onClick={handleCheckIn}>
+                Proceed with Check In
+              </Button>
+            )}
+            {error ||
+              (userData?.checkInDay1 && (
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={() => router.refresh()}
+                  className="text-sm"
+                >
+                  Scan Another QR
                 </Button>
-              )}
-              {error ||
-                (userData?.checkInDay1 && (
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    onClick={() => router.refresh()}
-                    className="text-sm"
-                  >
-                    Scan Another QR
-                  </Button>
-                ))}
-            </DialogClose>
+              ))}
           </DialogFooter>
         </DialogContent>
       </Dialog>
