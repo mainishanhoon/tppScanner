@@ -100,19 +100,19 @@ export default function QRScanner() {
         components={{ finder: false }}
       />
 
-      <div className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-6">
-        <p className="text-background text-lg font-semibold">
+      <div className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-6 font-bold">
+        <p className="text-background bg-foreground/50 rounded-lg p-2">
           Align the QR code within the frame
         </p>
 
         <div className="relative flex h-64 w-64 items-center justify-center">
-          <span className="border-background absolute top-0 left-0 h-10 w-10 border-t-4 border-l-4" />
-          <span className="border-background absolute top-0 right-0 h-10 w-10 border-t-4 border-r-4" />
-          <span className="border-background absolute bottom-0 left-0 h-10 w-10 border-b-4 border-l-4" />
-          <span className="border-background absolute right-0 bottom-0 h-10 w-10 border-r-4 border-b-4" />
+          <span className="border-background absolute top-0 left-0 h-14 w-14 border-t-4 border-l-4" />
+          <span className="border-background absolute top-0 right-0 h-14 w-14 border-t-4 border-r-4" />
+          <span className="border-background absolute bottom-0 left-0 h-14 w-14 border-b-4 border-l-4" />
+          <span className="border-background absolute right-0 bottom-0 h-14 w-14 border-r-4 border-b-4" />
         </div>
 
-        <p className="text-background/70 text-sm">
+        <p className="text-background/60 bg-foreground/30 rounded-lg p-2 text-sm">
           Scanning will start automatically
         </p>
       </div>
