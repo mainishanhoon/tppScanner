@@ -93,31 +93,23 @@ export default function QRScanner() {
         onScan={handleScan}
         onError={(error) => toast.error(`QR Error: ${error}`)}
         classNames={{
-          video: 'size-full object-cover rounded-xl shadow-lg',
+          video: 'size-64 rounded-xl bg-transparent shadow-lg',
           container:
-            'size-full absolute top-0 left-0 flex items-center justify-center',
+            'size-full absolute top-0 left-0 flex items-center bg-foreground/30 justify-center',
         }}
         components={{ finder: false }}
       />
-
-      <div className="pointer-events-none absolute inset-0">
-        <div className="bg-foreground/20 absolute inset-0 rounded-xl" />
-
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="z-10 h-64 w-64 bg-transparent" />
-        </div>
-      </div>
 
       <div className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-6">
         <p className="text-background text-lg font-semibold">
           Align the QR code within the frame
         </p>
 
-        <div className="relative flex h-64 w-64 items-center justify-center bg-transparent">
-          <span className="border-background absolute top-0 left-0 h-10 w-10 border-t-4 border-l-4" />
-          <span className="border-background absolute top-0 right-0 h-10 w-10 border-t-4 border-r-4" />
-          <span className="border-background absolute bottom-0 left-0 h-10 w-10 border-b-4 border-l-4" />
-          <span className="border-background absolute right-0 bottom-0 h-10 w-10 border-r-4 border-b-4" />
+        <div className="relative flex size-64 items-center justify-center bg-transparent">
+          <span className="border-background absolute top-0 left-0 h-14 w-14 border-t-4 border-l-4" />
+          <span className="border-background absolute top-0 right-0 h-14 w-14 border-t-4 border-r-4" />
+          <span className="border-background absolute bottom-0 left-0 h-14 w-14 border-b-4 border-l-4" />
+          <span className="border-background absolute right-0 bottom-0 h-14 w-14 border-r-4 border-b-4" />
         </div>
 
         <p className="text-background/70 text-sm">
