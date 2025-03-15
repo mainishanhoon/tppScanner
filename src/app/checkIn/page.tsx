@@ -57,7 +57,7 @@ export default function QRScanner() {
         }),
       {
         loading: 'Searching User...',
-        success: 'User Found!!',
+        success: 'User Found',
         error: 'No Such User Exists',
       },
     );
@@ -80,25 +80,44 @@ export default function QRScanner() {
           setOpen(false);
         }),
       {
-        loading: 'Checking in...',
-        success: 'Check-In Successful!',
-        error: "Couldn't Check In",
+        loading: 'Checking In...',
+        success: 'Check-In Successful',
+        error: "Couldn't Check-In",
       },
     );
   }
 
   return (
-    <div className="relative h-dvh w-full">
+    <div className="relative h-dvh">
       <Scanner
         onScan={handleScan}
         onError={(error) => toast.error(`QR Error: ${error}`)}
         classNames={{
           video: 'size-full object-cover rounded-xl shadow-lg',
           container:
-            'size-full absolute top-0 left-0 flex items-center justify-center bg-background',
+            'size-full absolute top-0 left-0 flex items-center justify-center',
         }}
         components={{ finder: false }}
       />
+
+      <div className="bg-opacity-20 bg-foreground absolute inset-0 rounded-xl" />
+
+      <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-6">
+        <p className="text-background text-lg font-semibold">
+          Align the QR code within the frame
+        </p>
+
+        <div className="relative flex h-64 w-64 items-center justify-center bg-transparent">
+          <span className="border-background absolute top-0 left-0 h-10 w-10 border-t-4 border-l-4" />
+          <span className="border-background absolute top-0 right-0 h-10 w-10 border-t-4 border-r-4" />
+          <span className="border-background absolute bottom-0 left-0 h-10 w-10 border-b-4 border-l-4" />
+          <span className="border-background absolute right-0 bottom-0 h-10 w-10 border-r-4 border-b-4" />
+        </div>
+
+        <p className="text-background/70 text-sm">
+          Scanning will start automatically
+        </p>
+      </div>
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="outline-background bg-muted max-w-[300px] rounded-xl outline-2 outline-dashed md:max-w-sm">
