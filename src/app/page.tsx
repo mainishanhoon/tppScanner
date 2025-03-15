@@ -22,7 +22,7 @@ export default function SignIn() {
 
   return (
     <section className="flex h-dvh items-center justify-center px-6">
-      <Card className="w-[500px] bg-muted">
+      <Card className="bg-muted w-[500px]">
         <CardHeader>
           <CardTitle className="text-3xl">Sign In</CardTitle>
           <CardDescription className="font-medium">
@@ -31,8 +31,8 @@ export default function SignIn() {
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
           {error && (
-            <div className="flex items-center gap-2 rounded-sm bg-destructive/20 p-2 text-sm font-black text-destructive">
-              <BadgeAlert />
+            <div className="bg-destructive/20 text-destructive flex items-center gap-2 rounded-sm p-2 text-sm">
+              <BadgeAlert strokeWidth={2.5} />
               <p>{error}</p>
             </div>
           )}

@@ -93,9 +93,9 @@ export default function QRScanner() {
         onScan={handleScan}
         onError={(error) => toast.error(`QR Error: ${error}`)}
         classNames={{
-          video: 'size-64 rounded-xl bg-transparent shadow-lg',
+          video: 'size-full rounded-xl bg-transparent shadow-lg',
           container:
-            'size-full absolute top-0 left-0 flex items-center bg-foreground/30 justify-center',
+            'size-full absolute top-0 left-0 flex items-center bg-background justify-center',
         }}
         components={{ finder: false }}
       />
