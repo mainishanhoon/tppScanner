@@ -100,9 +100,15 @@ export default function QRScanner() {
         components={{ finder: false }}
       />
 
-      <div className="bg-opacity-20 bg-foreground absolute inset-0 rounded-xl" />
+      <div className="pointer-events-none absolute inset-0">
+        <div className="bg-foreground bg-opacity-20 absolute inset-0 rounded-xl" />
 
-      <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-6">
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="z-10 h-64 w-64 bg-transparent" />
+        </div>
+      </div>
+
+      <div className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-6">
         <p className="text-background text-lg font-semibold">
           Align the QR code within the frame
         </p>
