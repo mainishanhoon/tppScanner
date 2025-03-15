@@ -101,7 +101,7 @@ export default function QRScanner() {
       />
 
       <div className="pointer-events-none absolute inset-0">
-        <div className="bg-foreground bg-opacity-20 absolute inset-0 rounded-xl" />
+        <div className="bg-foreground/20 absolute inset-0 rounded-xl" />
 
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="z-10 h-64 w-64 bg-transparent" />
