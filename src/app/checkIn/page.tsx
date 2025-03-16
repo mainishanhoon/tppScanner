@@ -18,7 +18,6 @@ import {
   BadgeCheck,
   BadgeInfo,
   CircleUser,
-  Loader,
 } from 'lucide-react';
 
 interface UserData {

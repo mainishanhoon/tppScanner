@@ -9,7 +9,7 @@ export async function GET(_: NextRequest, { params }: Params) {
   const { userId } = await params;
 
   try {
-    const user = await prisma.tpp_2.findUniqueOrThrow({
+    const user = await prisma.tpp_2.findFirstOrThrow({
       where: { id: userId, seatStatus: 'BOOKED' },
       select: {
         id: true,
@@ -22,6 +22,7 @@ export async function GET(_: NextRequest, { params }: Params) {
 
     return NextResponse.json(user);
   } catch (error) {
+    console.error('Error Fetching User:', error);
     return NextResponse.json({ error: 'User not found' }, { status: 404 });
   }
 }
@@ -29,20 +30,22 @@ export async function GET(_: NextRequest, { params }: Params) {
 export async function POST(_: NextRequest, { params }: Params) {
   const { userId } = await params;
 
-  const user = await prisma.tpp_2.findUnique({
-    where: { id: userId, seatStatus: 'BOOKED' },
-    select: { checkInDay1: true, checkInDay1At: true },
-  });
-
-  if (!user)
-    return NextResponse.json({ error: 'User not found' }, { status: 404 });
-
-  if (user.checkInDay1) {
-    return NextResponse.json({
-      message: 'User Already Checked In',
-      checkInTime: user.checkInDay1At,
-      status: 400,
+  try {
+    const user = await prisma.tpp_2.findFirstOrThrow({
+      where: { id: userId, seatStatus: 'BOOKED' },
+      select: { checkInDay1: true, checkInDay1At: true },
     });
+
+    if (user.checkInDay1) {
+      return NextResponse.json({
+        message: 'User Already Checked In',
+        checkInTime: user.checkInDay1At,
+        status: 400,
+      });
+    }
+  } catch (error) {
+    console.error('Error Updating User:', error);
+    return NextResponse.json({ error: 'User not found' }, { status: 404 });
   }
 
   const updateInfo = await prisma.tpp_2.update({
