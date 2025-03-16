@@ -58,7 +58,7 @@ export default function QRScanner() {
       {
         loading: 'Searching User...',
         success: 'User Found',
-        error: 'No Such User Exists',
+        error: 'No Such User Found',
       },
     );
   }
@@ -123,7 +123,7 @@ export default function QRScanner() {
             </path>
           </svg>
         </span>
-        <p className="text-xl -mt-5">
+        <p className="-mt-5 text-xl">
           Accessing Phone Camera
           <br />
           Please Wait!!
@@ -216,30 +216,19 @@ export default function QRScanner() {
             </div>
           )}
 
-          <DialogFooter className="flex flex-col items-center gap-3">
+          <DialogFooter className="mt-5 flex flex-col items-center gap-3">
             {!error && !userData?.checkInDay1 && (
-              <div className="flex flex-col items-center gap-3">
-                <Button className="mt-5 text-sm" onClick={handleCheckIn}>
-                  Proceed with Check In
-                </Button>
-                <Button
-                  type="button"
-                  onClick={() => setOpen(false)}
-                  className="text-background bg-blue-500 text-sm shadow-sm hover:bg-blue-500/80"
-                >
-                  Scan Another QR
-                </Button>
-              </div>
-            )}
-            {error && (
-              <Button
-                type="button"
-                onClick={() => setOpen(false)}
-                className="text-background bg-blue-500 text-sm shadow-sm hover:bg-blue-500/80"
-              >
-                Scan Another QR
+              <Button className="text-sm" onClick={handleCheckIn}>
+                Proceed with Check-In
               </Button>
             )}
+            <Button
+              type="button"
+              onClick={() => setOpen(false)}
+              className="text-background bg-blue-500 text-sm shadow-sm hover:bg-blue-500/80"
+            >
+              Scan Another QR
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
