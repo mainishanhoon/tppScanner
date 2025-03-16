@@ -100,7 +100,7 @@ export default function QRScanner() {
         components={{ finder: false }}
       />
 
-      <div className="text-foreground absolute inset-0 z-10 flex flex-col items-center justify-center gap-6 text-center font-bold">
+      <div className="text-foreground absolute inset-0 z-10 flex flex-col items-center justify-center text-center font-bold">
         <span className="size-40">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 150">
             <path
@@ -123,13 +123,13 @@ export default function QRScanner() {
             </path>
           </svg>
         </span>
-        <p className="text-xl">
+        <p className="text-xl -mt-5">
           Accessing Phone Camera
           <br />
           Please Wait!!
         </p>
       </div>
-      <div className="absolute inset-0 z-30 flex flex-col items-center justify-center gap-6 font-bold">
+      <div className="text-background absolute inset-0 z-30 flex flex-col items-center justify-center gap-6 font-bold">
         <p>Align the QR code within the frame</p>
 
         <div className="relative flex h-64 w-64 items-center justify-center">
