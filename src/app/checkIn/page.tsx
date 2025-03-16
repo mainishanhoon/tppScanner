@@ -93,41 +93,43 @@ export default function QRScanner() {
         onScan={handleScan}
         onError={(error) => toast.error(`QR Error: ${error}`)}
         classNames={{
-          video: 'size-full object-cover rounded-xl shadow-lg',
+          video: 'size-full object-cover rounded-xl shadow-lg z-20',
           container:
             'size-full absolute top-0 left-0 flex items-center justify-center',
         }}
         components={{ finder: false }}
       />
 
-      <div className="absolute inset-0 flex flex-col items-center justify-center gap-6 bg-gradient-to-tl from-zinc-500 via-stone-600 to-zinc-900 bg-clip-text font-bold text-transparent">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 150">
-          <path
-            fill="none"
-            stroke="#000000"
-            stroke-width="15"
-            stroke-linecap="round"
-            stroke-dasharray="300 385"
-            stroke-dashoffset="0"
-            d="M275 75c0 31-27 50-50 50-58 0-92-100-150-100-28 0-50 22-50 50s23 50 50 50c58 0 92-100 150-100 24 0 50 19 50 50Z"
-          >
-            <animate
-              attributeName="stroke-dashoffset"
-              calcMode="spline"
-              dur="2"
-              values="685;-685"
-              keySplines="0 0 1 1"
-              repeatCount="indefinite"
-            ></animate>
-          </path>
-        </svg>
-        <p className="text-lg">
+      <div className="text-foreground absolute inset-0 z-10 flex flex-col items-center justify-center gap-6 text-center font-bold">
+        <span className="size-40">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 150">
+            <path
+              fill="none"
+              stroke="#000000"
+              stroke-width="15"
+              stroke-linecap="round"
+              stroke-dasharray="300 385"
+              stroke-dashoffset="0"
+              d="M275 75c0 31-27 50-50 50-58 0-92-100-150-100-28 0-50 22-50 50s23 50 50 50c58 0 92-100 150-100 24 0 50 19 50 50Z"
+            >
+              <animate
+                attributeName="stroke-dashoffset"
+                calcMode="spline"
+                dur="2"
+                values="685;-685"
+                keySplines="0 0 1 1"
+                repeatCount="indefinite"
+              ></animate>
+            </path>
+          </svg>
+        </span>
+        <p className="text-xl">
           Accessing Phone Camera
           <br />
           Please Wait!!
         </p>
       </div>
-      <div className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-6 font-bold">
+      <div className="absolute inset-0 z-30 flex flex-col items-center justify-center gap-6 font-bold">
         <p>Align the QR code within the frame</p>
 
         <div className="relative flex h-64 w-64 items-center justify-center">
@@ -215,17 +217,6 @@ export default function QRScanner() {
           )}
 
           <DialogFooter className="flex flex-col items-center gap-3">
-            {userData?.checkInDay1 && (
-              <div className="flex flex-col items-center gap-3">
-                <Button
-                  type="button"
-                  onClick={() => setOpen(false)}
-                  className="text-background bg-blue-500 text-sm shadow-sm hover:bg-blue-500/80"
-                >
-                  Scan Another QR
-                </Button>
-              </div>
-            )}
             {!error && !userData?.checkInDay1 && (
               <div className="flex flex-col items-center gap-3">
                 <Button className="mt-5 text-sm" onClick={handleCheckIn}>

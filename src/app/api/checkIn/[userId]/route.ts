@@ -9,7 +9,7 @@ export async function GET(_: NextRequest, { params }: Params) {
   const { userId } = await params;
 
   try {
-    const user = await prisma.tpp_2.findFirstOrThrow({
+    const user = await prisma.tpp_2.findUniqueOrThrow({
       where: { id: userId, seatStatus: 'BOOKED' },
       select: {
         id: true,
@@ -31,7 +31,7 @@ export async function POST(_: NextRequest, { params }: Params) {
   const { userId } = await params;
 
   try {
-    const user = await prisma.tpp_2.findFirstOrThrow({
+    const user = await prisma.tpp_2.findUniqueOrThrow({
       where: { id: userId, seatStatus: 'BOOKED' },
       select: { checkInDay1: true, checkInDay1At: true },
     });
