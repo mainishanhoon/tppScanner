@@ -18,6 +18,7 @@ import {
   BadgeCheck,
   BadgeInfo,
   CircleUser,
+  Loader,
 } from 'lucide-react';
 
 interface UserData {
@@ -100,21 +101,44 @@ export default function QRScanner() {
         components={{ finder: false }}
       />
 
-      <div className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-6 font-bold">
-        <p className="text-background bg-foreground/50 rounded-lg p-2">
-          Align the QR code within the frame
+      <div className="absolute inset-0 flex flex-col items-center justify-center gap-6 bg-gradient-to-tl from-zinc-500 via-stone-600 to-zinc-900 bg-clip-text font-bold text-transparent">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 150">
+          <path
+            fill="none"
+            stroke="#000000"
+            stroke-width="15"
+            stroke-linecap="round"
+            stroke-dasharray="300 385"
+            stroke-dashoffset="0"
+            d="M275 75c0 31-27 50-50 50-58 0-92-100-150-100-28 0-50 22-50 50s23 50 50 50c58 0 92-100 150-100 24 0 50 19 50 50Z"
+          >
+            <animate
+              attributeName="stroke-dashoffset"
+              calcMode="spline"
+              dur="2"
+              values="685;-685"
+              keySplines="0 0 1 1"
+              repeatCount="indefinite"
+            ></animate>
+          </path>
+        </svg>
+        <p className="text-lg">
+          Accessing Phone Camera
+          <br />
+          Please Wait!!
         </p>
+      </div>
+      <div className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-6 font-bold">
+        <p>Align the QR code within the frame</p>
 
         <div className="relative flex h-64 w-64 items-center justify-center">
-          <span className="border-background absolute top-0 left-0 h-14 w-14 border-t-4 border-l-4" />
-          <span className="border-background absolute top-0 right-0 h-14 w-14 border-t-4 border-r-4" />
-          <span className="border-background absolute bottom-0 left-0 h-14 w-14 border-b-4 border-l-4" />
-          <span className="border-background absolute right-0 bottom-0 h-14 w-14 border-r-4 border-b-4" />
+          <span className="border-background absolute top-0 left-0 size-14 border-t-4 border-l-4" />
+          <span className="border-background absolute top-0 right-0 size-14 border-t-4 border-r-4" />
+          <span className="border-background absolute bottom-0 left-0 size-14 border-b-4 border-l-4" />
+          <span className="border-background absolute right-0 bottom-0 size-14 border-r-4 border-b-4" />
         </div>
 
-        <p className="text-background/60 bg-foreground/30 rounded-lg p-2 text-sm">
-          Scanning will start automatically
-        </p>
+        <p>Scanning will start automatically</p>
       </div>
 
       <Dialog open={open} onOpenChange={setOpen}>

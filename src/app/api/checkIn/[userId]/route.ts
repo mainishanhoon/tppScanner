@@ -8,21 +8,22 @@ interface Params {
 export async function GET(_: NextRequest, { params }: Params) {
   const { userId } = await params;
 
-  const user = await prisma.tpp_2.findUnique({
-    where: { id: userId, seatStatus: 'BOOKED' },
-    select: {
-      id: true,
-      name: true,
-      seatNumber: true,
-      checkInDay1: true,
-      checkInDay1At: true,
-    },
-  });
+  try {
+    const user = await prisma.tpp_2.findUniqueOrThrow({
+      where: { id: userId, seatStatus: 'BOOKED' },
+      select: {
+        id: true,
+        name: true,
+        seatNumber: true,
+        checkInDay1: true,
+        checkInDay1At: true,
+      },
+    });
 
-  if (!user)
-    return NextResponse.json({ error: 'User not Found' }, { status: 404 });
-
-  return NextResponse.json(user);
+    return NextResponse.json(user);
+  } catch (error) {
+    return NextResponse.json({ error: 'User not found' }, { status: 404 });
+  }
 }
 
 export async function POST(_: NextRequest, { params }: Params) {
