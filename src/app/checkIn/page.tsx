@@ -38,7 +38,7 @@ export default function QRScanner() {
     setError(null);
 
     toast.promise(
-      fetch(`/api/checkIn/${result[0].rawValue}`)
+      fetch(`/api/checkIn/${result[0].rawValue}`, { method: 'GET' })
         .then(async (response) => {
           if (!response.ok) {
             setError('No Such User Exists');

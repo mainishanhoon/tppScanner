@@ -1,15 +1,15 @@
 import type { Metadata } from 'next';
-import { Rubik } from 'next/font/google';
+import { Montserrat } from 'next/font/google';
 import './globals.css';
 import { Toaster } from 'sonner';
 
-const rubik = Rubik({
+const rubik = Montserrat({
   weight: 'variable',
   subsets: ['latin'],
 });
 
 export const metadata: Metadata = {
-  title: 'QrScanner - TPP',
+  title: 'CheckIn System - TPP',
   description: 'Built by @mainishanhoon',
 };
 
@@ -20,9 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${rubik.className} font-normal antialiased`}
-      >
+      <body className={`${rubik.className} font-normal tracking-wider antialiased`}>
         {children}
         <Toaster
           position="top-center"
