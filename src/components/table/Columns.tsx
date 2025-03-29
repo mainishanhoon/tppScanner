@@ -104,7 +104,7 @@ export const columns: ColumnDef<Table>[] = [
     },
   },
   {
-    accessorKey: 'checkInDay1',
+    accessorKey: 'checkInDay2',
     header: ({ column }) => (
       <DataTableColumnHeader
         className="border-r-2 border-dashed text-center"
@@ -118,11 +118,11 @@ export const columns: ColumnDef<Table>[] = [
           <span>
             <Badge
               variant={
-                !!row.getValue('checkInDay1') ? 'constructive' : 'destructive'
+                !!row.getValue('checkInDay2') ? 'constructive' : 'destructive'
               }
               className="rounded-md font-medium uppercase"
             >
-              {!!row.getValue('checkInDay1') ? 'TRUE' : 'FALSE'}
+              {!!row.getValue('checkInDay2') ? 'TRUE' : 'FALSE'}
             </Badge>
           </span>
         </div>
@@ -159,7 +159,7 @@ export const columns: ColumnDef<Table>[] = [
     },
   },
   {
-    accessorKey: 'checkInDay1At',
+    accessorKey: 'checkInDay2At',
     header: ({ column }) => (
       <DataTableColumnHeader
         className="border-r-2 border-dashed text-center"
@@ -174,7 +174,7 @@ export const columns: ColumnDef<Table>[] = [
             {Intl.DateTimeFormat('en-IN', {
               timeStyle: 'medium',
             })
-              .format(row.getValue('checkInDay1At'))
+              .format(row.getValue('checkInDay2At'))
               .toUpperCase()}
           </span>
         </div>
