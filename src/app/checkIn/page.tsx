@@ -24,8 +24,8 @@ interface UserData {
   id: string;
   name: string;
   seatNumber: string;
-  checkInDay1: boolean;
-  checkInDay1At: Date;
+  checkInDay2: boolean;
+  checkInDay2At: Date;
 }
 
 export default function QRScanner() {
@@ -47,8 +47,8 @@ export default function QRScanner() {
           return response.json();
         })
         .then((data) => {
-          if (data.checkInDay1At) {
-            data.checkInDay1At = new Date(data.checkInDay1At);
+          if (data.checkInDay2At) {
+            data.checkInDay2At = new Date(data.checkInDay2At);
           }
           setUserData(data);
         })
@@ -72,8 +72,8 @@ export default function QRScanner() {
         .then((data) => {
           setUserData({
             ...userData,
-            checkInDay1: true,
-            checkInDay1At: new Date(data.checkInTime),
+            checkInDay2: true,
+            checkInDay2At: new Date(data.checkInTime),
           });
         })
         .finally(() => {
