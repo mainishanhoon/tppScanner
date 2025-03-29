@@ -15,8 +15,8 @@ export async function GET(_: NextRequest, { params }: Params) {
         id: true,
         name: true,
         seatNumber: true,
-        checkInDay1: true,
-        checkInDay1At: true,
+        checkInDay2: true,
+        checkInDay2At: true,
       },
     });
 
@@ -33,7 +33,7 @@ export async function POST(_: NextRequest, { params }: Params) {
   try {
     const user = await prisma.tpp_2.findUniqueOrThrow({
       where: { id: userId, seatStatus: 'BOOKED' },
-      select: { checkInDay1: true, checkInDay1At: true },
+      select: { checkInDay2: true, checkInDay2At: true },
     });
 
     if (user.checkInDay1) {
@@ -50,7 +50,7 @@ export async function POST(_: NextRequest, { params }: Params) {
 
   const updateInfo = await prisma.tpp_2.update({
     where: { id: userId },
-    data: { checkInDay1: true, checkInDay1At: new Date() },
+    data: { checkInDay2: true, checkInDay2At: new Date() },
   });
 
   return NextResponse.json({
