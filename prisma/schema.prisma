@@ -25,7 +25,7 @@ model Tpp_2 {
   checkInDay1    Boolean   @default(false)
   checkInDay1At  DateTime?
   checkInDay2    Boolean   @default(false)
-  checkInTime2At DateTime?
+  checkInDay2At DateTime?
 }
 
 enum SeatStatus {
